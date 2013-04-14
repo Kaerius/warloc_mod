@@ -38,17 +38,18 @@ import cpw.mods.fml.common.registry.LanguageRegistry;
 
 
 public class mod_MainClass{
-  @SidedProxy(clientSide = "warloc.ClientProxy", serverSide = "warloc.ServerProxy")
+	@SidedProxy(clientSide = "warloc.ClientProxy", serverSide = "warloc.ServerProxy")
 	public static ServerPorxy proxy;
-	public static CreativeTabs warlocTab = new warlocTab(CreativeTabs.getNextID(),"warlocTab"); //РЎСЂРµР°С‚РёРІ С‚Р°Р±Р»РёС†Р°
-	/*РРґРµРё:
-	 * Р—Р°РґР°РІР°С‚СЊ РР” С‡РµСЂРµ РјР°СЃСЃРёРІ СЃ С„Р°Р№Р»Р° РєРѕРЅС„РёРіСѓСЂР°С†РёРё
-	 * Р—Р°РґР°РІР°С‚СЊ С‚РµРєСЃС‚СѓСЂС‹ РїРѕ РёРјРµРЅРё Р±Р»РѕРєР° РёР»Рё РїСЂРµРґРјРµС‚Р°
-	 * Р Р°Р·РѕР±СЂР°С‚СЃСЏ СЃ Р±РёРѕРјРѕРј РїРѕС‡РµРјСѓ С‡РµСЂРµР· С„Р°Р№Р» РєРѕРЅС„РёРіСѓСЂР°С†РёРё РР” РїСЂРё РіРµРЅРµСЂР°С†РёРё null
-	 * Р’СЃРµ РІС…РѕРґРЅС‹Рµ РїР°СЂР°РјРµС‚СЂС‹ РѕР±СЏРІР»СЏС‚СЊ РІ РѕСЃРЅРѕРІРЅРѕРј С„Р°Р№Р»Рµ? РР»Рё СЃРѕР·РґР°С‚СЊ РѕС‚РґРµР»СЊРЅС‹Р№ С„Р°Р№Р» РґР»СЏ Р±Р»РѕРєРѕРІ Рё РїСЂРµРґРјРµС‚РѕРІ.
-	 * РћР±СЏРІР»СЏС‚СЊ СЃРІРѕР№СЃС‚РІР° block(200, 2, 3, rock, material) - РїСЂРёРјРµСЂ
+	public static CreativeTabs warlocTab = new warlocTab(CreativeTabs.getNextID(),"warlocTab"); //Среатив таблица
+	/*Идеи:
+	 * Задавать ИД чере массив с файла конфигурации
+	 * Задавать текстуры по имени блока или предмета
+	 * Разобратся с биомом почему через файл конфигурации ИД при генерации null
+	 * Все входные параметры обявлять в основном файле? Или создать отдельный файл для блоков и предметов.
+	 * Обявлять свойства block(200, 2, 3, rock, material) - пример
+	 * Почистить и оптимизировать код
 	 * */
-	static int EntityCreeperManId = 2000;//РђР№РґРё СЏР№С†Р° С‚РµСЃС‚РѕРІРѕРіРѕ РјРѕР±Р°, С‡РµР»РѕРІРµРєР° РєСЂРёРїРµСЂР°.
+	static int EntityCreeperManId = 2000;
 	static int EntityFlamingoId = 2001;
 	
 	
@@ -73,33 +74,12 @@ public class mod_MainClass{
 	public static Item ItemDirtyShard;
 	public static int ItemDirtyShardID = 166;
 	
-	//public static EntityMob mob_test;
-    
     @Instance("warlocID")
     public static mod_MainClass instance;
     
 	@PreInit        
 	public void load(FMLPreInitializationEvent event) {
 		proxy.registerRenderThings(); 
-		/* Р¤Р°Р№Р» РєРѕРЅС„РёРіСѓСЂР°С†РёРё
-		 * РїСЂРё Р·Р°РґР°РЅРёРё РРґ РїСЂРµРґРјРµС‚Р°Рј С‡РµСЂРµР· РЅРµРіРѕ РїСЂРѕРёСЃС…РѕРґРёС‚ РѕС€РёР±РєР° РіРµРЅРµСЂР°С†РёРё Р±РёРѕРјР° 
-		 * С‚Р°Рє РєР°Рє Р°Р№РґРё null 
-		 * (РІРѕР·РјРѕР¶РЅРѕРµ СЂРµС€РµРЅРёРµ РµСЃС‚СЊ РІ extrabiomes) 
-		 * */
-		/*
-		Configuration config = new Configuration(event.getSuggestedConfigurationFile());
-		config.load();
-		
-		BlockDirtDeadID = config.getBlock("BlockDirtDead", Configuration.CATEGORY_BLOCK, 160).getInt();
-		BlockStoneDirtyID = config.getBlock("BlockStoneDirty", Configuration.CATEGORY_BLOCK, 161).getInt();
-		BlockCobblestoneDirtyID = config.getBlock("BlockCobblestoneDirty", Configuration.CATEGORY_BLOCK, 162).getInt();
-		BlockBrickDirtyID = config.getBlock("BlockBrickDirty", Configuration.CATEGORY_BLOCK, 163).getInt();
-		BlockOreColdIronID = config.getBlock("BlockOreColdIron", Configuration.CATEGORY_BLOCK, 164).getInt();
-		ItemColdIronID = config.getItem("ItemColdIron", Configuration.CATEGORY_ITEM, 165).getInt();
-		ItemDirtyShardID = config.getItem("ItemDirtyShard", Configuration.CATEGORY_ITEM, 166).getInt();
-		
-		config.save();
-		*/
 	}
 			
 	@Init
@@ -112,28 +92,24 @@ public class mod_MainClass{
 		ItemColdIron = new ItemColdIron(ItemColdIronID);
 		ItemDirtyShard = new ItemDirtyShard(ItemDirtyShardID);
 		
-		//СЂРµРіРёСЃС‚СЂР°С†РёСЏ Р±Р»РѕРєРѕРІ
+		//регистрация блоков
 		GameRegistry.registerBlock(BlockDirtDead, "Warloc.BlockDirtDead");
 		GameRegistry.registerBlock(BlockStoneDirty, "Warloc.BlockStoneDirty");
 		GameRegistry.registerBlock(BlockCobblestoneDirty, "Warloc.BlockCobblestoneDirty");
 		GameRegistry.registerBlock(BlockBrickDirty, "Warloc.BlockBrickDirty");
 		GameRegistry.registerBlock(BlockOreColdIron, "Warloc.BlockOreColdIron");
 	
-		//РљСЂРµРїРѕСЃС‚СЊ Р±Р»РѕРєРѕРІ РєР°РєРёРј РёРЅСЃС‚СЂСѓРјРµРЅС‚РѕРј СЂР°Р·Р±РёРІР°С‚СЊ Рё РєР°РєРѕРіРѕ РєР°С‡РµСЃС‚РІР°, 3 - Р°Р»РјР°Р·РЅС‹Р№, 2 - Р¶РµР»РµР·РЅС‹Р№
+		//Крепость блоков каким инструментом разбивать и какого качества, 3 - алмазный, 2 - железный
 		MinecraftForge.setBlockHarvestLevel(BlockDirtDead, "shovel" , 0 ) ;
 		MinecraftForge.setBlockHarvestLevel(BlockOreColdIron, "pickaxe" , 3 ) ;
 		
-		//Р РµРіРёСЃС‚СЂР°С†РёСЏ СЂРµС†РµРїС‚РѕРІ
+		//Регистрация рецептов
 		GameRegistry.addShapelessRecipe(new ItemStack(ItemColdIron, 1), new Object[] {BlockOreColdIron});
 		GameRegistry.addRecipe(new ItemStack(BlockBrickDirty, 1), new Object[] { "##", "##", '#', ItemDirtyShard});
 		GameRegistry.addSmelting(BlockOreColdIronID, new ItemStack(ItemColdIron, 1), 5F);
 		GameRegistry.addSmelting(BlockCobblestoneDirtyID, new ItemStack(BlockStoneDirty, 1), 5F);
-		
-		//Р РµРіРёСЃС‚СЂР°С†РёСЏ СЃРїР°РІРЅР° РјРѕР±РѕРІ
-	    ModLoader.addSpawn(EntitySkeleton.class, 2, 1, 2, EnumCreatureType.monster, BiomeGenBase.plains);
-	    ModLoader.addSpawn(EntitySkeleton.class, 5, 1, 2, EnumCreatureType.monster, BiomeGenBase.extremeHills);
-	    
-	    //Р›РѕРєР°Р»РёР·Р°С†РёРё en
+		 
+	    //Локализации en
 	    LanguageRegistry.addName(BlockBrickDirty, "Brick Dirty");
 	    LanguageRegistry.addName(BlockDirtDead, "Dirt Dead");
 	    LanguageRegistry.addName(BlockStoneDirty, "Stone Dirty");
@@ -144,28 +120,30 @@ public class mod_MainClass{
 	    LanguageRegistry.instance().addStringLocalization("entity.warloc.CreeperMan.name", "Creeper Man");
 	    LanguageRegistry.instance().addStringLocalization("entity.warloc.Flamingo.name", "Flamingo");
 		
-	    //Р›РѕРєР°Р»РёР·Р°С†РёРё ru
-	    LanguageRegistry.instance().addNameForObject(BlockBrickDirty, "ru_RU", "РџСЂРѕРєР»СЏС‚С‹Р№ РєРёСЂРїРёС‡");
-		LanguageRegistry.instance().addNameForObject(BlockDirtDead, "ru_RU", "РџСЂРѕРєР»СЏС‚Р°СЏ Р·РµРјР»СЏ");
-		LanguageRegistry.instance().addNameForObject(BlockStoneDirty, "ru_RU", "РџСЂРѕРєР»СЏС‚С‹Р№ РєР°РјРµРЅСЊ");
-		LanguageRegistry.instance().addNameForObject(BlockCobblestoneDirty, "ru_RU", "РџСЂРѕРєР»СЏС‚С‹Р№ Р±СѓР»С‹Р¶РЅРёРє");
-		LanguageRegistry.instance().addNameForObject(BlockOreColdIron, "ru_RU", "Р СѓРґР° С…Р»Р°РґРЅРѕРіРѕ Р¶РµР»РµР·Р°");
-		LanguageRegistry.instance().addNameForObject(ItemColdIron, "ru_RU", "РҐР»Р°РґРЅРѕРµ Р¶РµР»РµР·Рѕ");
-		LanguageRegistry.instance().addNameForObject(ItemDirtyShard, "ru_RU", "РџСЂРѕРєР»СЏС‚С‹Р№ РєРёСЂРїРёС‡");
-		LanguageRegistry.instance().addStringLocalization("entity.warloc.CreeperMan.name", "ru_RU", "Р§РµР»РѕРІРµРєР° РєСЂРёРїРµСЂ");
-		LanguageRegistry.instance().addStringLocalization("entity.warloc.Flamingo.name", "ru_RU", "Р¤Р»Р°РјРёРЅРіРѕ");
+	    //Локализации ru
+	    LanguageRegistry.instance().addNameForObject(BlockBrickDirty, "ru_RU", "Проклятый кирпич");
+		LanguageRegistry.instance().addNameForObject(BlockDirtDead, "ru_RU", "Проклятая земля");
+		LanguageRegistry.instance().addNameForObject(BlockStoneDirty, "ru_RU", "Проклятый камень");
+		LanguageRegistry.instance().addNameForObject(BlockCobblestoneDirty, "ru_RU", "Проклятый булыжник");
+		LanguageRegistry.instance().addNameForObject(BlockOreColdIron, "ru_RU", "Руда хладного железа");
+		LanguageRegistry.instance().addNameForObject(ItemColdIron, "ru_RU", "Хладное железо");
+		LanguageRegistry.instance().addNameForObject(ItemDirtyShard, "ru_RU", "Проклятый кирпич");
+		LanguageRegistry.instance().addStringLocalization("entity.warloc.CreeperMan.name", "ru_RU", "Человека крипер");
+		LanguageRegistry.instance().addStringLocalization("entity.warloc.Flamingo.name", "ru_RU", "Фламинго");
 
-		//РўСѓС‚ РЅР°С€ РјРѕР±, РЅСѓР¶РЅРѕ СЃРѕРєСЂР°С‚РёС‚СЊ Рё СЂР°Р·РѕР±СЂР°С‚СЃСЏ
+		//Тут наш моб, нужно сократить и разобратся
 		proxy.registerRenderThings();
 
-		//СЂРµРіРёСЃС‚СЂРёСЂСѓРµРј РјРѕР±Р°
+		//регистрируем моба
 		EntityRegistry.registerModEntity(EntityCreeperMan.class, "CreeperMan", 1, this, 80, 3, true);
-		EntityRegistry.registerModEntity(EntityFlamingo.class, "Flamingo", 1, this, 80, 3, true);
-		//СЂРµРіРёСЃС‚СЂРёСЂСѓРµРј СЃРїР°РІРЅ
+		EntityRegistry.registerModEntity(EntityFlamingo.class, "Flamingo", 2, this, 81, 4, true);
+		
+		//регистрируем спавн
 		EntityRegistry.addSpawn(EntityCreeperMan.class, 10, 2, 4, EnumCreatureType.monster, BiomeGenBase.desert, BiomeGenBase.desertHills, BiomeGenBase.forest);
 		EntityRegistry.addSpawn(EntityFlamingo.class, 10, 2, 4, EnumCreatureType.monster, BiomeGenBase.desert, BiomeGenBase.desertHills, BiomeGenBase.forest);
-		//СЂРµРіРёСЃС‚СЂРёСЂСѓРµРј СЏР№С†Рѕ
-		registerEntityEggCreeperMan(EntityCreeperMan.class, 0xffffff, 0x000000);
+		
+		//регистрируем яйцо
+		registerEntityEggCreeperMan(EntityCreeperMan.class, 0xffff00, 0x00ffff);
 		registerEntityEggFlamingo(EntityFlamingo.class, 0xffffff, 0x000000);
 	}
 	
@@ -183,7 +161,7 @@ public class mod_MainClass{
 	
 	@PostInit
 	public static void postInit(FMLPostInitializationEvent event){
-		//Р РµРіРёСЃС‚СЂР°С†РёСЏ РіРµРЅРµСЂР°С†РёРё Р±РёРѕРјРѕРІ, СЂСѓРґ, СЃС‚СЂРѕРµРЅРёР№
+		//Регистрация генерации биомов, руд, строений
 		GameRegistry.addBiome(new BiomCemetry());
 		GameRegistry.registerWorldGenerator(new OreColdIron());
 	}
